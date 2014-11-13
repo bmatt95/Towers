@@ -47,8 +47,11 @@ public class Towers {
 			int to = s.nextInt();
 			printBoard(move(from - 1, to - 1));
 		}
+		System.out.println("You win!\nPlay again? (y/n)");
+		if (s.next().equals("y")) {
+			reset();
+		}
 		s.close();
-		System.out.println("You win!");
 	}
 
 	boolean hasWon() {
@@ -115,6 +118,14 @@ public class Towers {
 		}
 		System.out.println(" --||--  --||--  --||--");
 		System.out.print(message);
+	}
+
+	void reset() {
+		this.board = new Pole[3];
+		board[0] = new Pole(true);
+		board[1] = new Pole(false);
+		board[2] = new Pole(false);
+		play();
 	}
 
 	public static void main(String[] args) {
