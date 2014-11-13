@@ -11,36 +11,38 @@ import java.util.Scanner;
 public class Towers {
 	class Pole {
 		int[] markers;
-		Pole(boolean isFirst) {
+		Pole(boolean isFirst, int size) {
 			if (isFirst) {
-				markers = new int[3];
+				markers = new int[size];
 				for (int i = 0; i < markers.length; i++) {
 					markers[i] = i + 1;
 				}
 			} else {
-				markers = new int[3];
+				markers = new int[size];
 			}
 		}
 
 		boolean isAligned() {
-			if (markers[0] < markers[1] && markers[1] < markers[2] && markers[0] != 0 && markers[1] != 0 && markers[2] != 0) {
-				return true;
+			for (int i = 0; i < markers.length - 2; i++) {
+				if (markers[i] > markers[i + 1] || markers[i] == 0 || markers [i + 1] == 0) {
+					return false;
+				}
 			}
-			return false;
+			return true;
 		}
 	}
 
 	Pole[] board;
+	static Scanner s = new Scanner(System.in);
 
-	Towers() {
+	Towers(int size) {
 		this.board = new Pole[3];
-		board[0] = new Pole(true);
-		board[1] = new Pole(false);
-		board[2] = new Pole(false);
+		board[0] = new Pole(true, size);
+		board[1] = new Pole(false, size);
+		board[2] = new Pole(false, size);
 	}
 
 	void play() {
-		Scanner s = new Scanner(System.in);
 		printBoard("");
 		while (!hasWon()) {
 			int from = s.nextInt();
@@ -51,7 +53,6 @@ public class Towers {
 		if (s.next().equals("y")) {
 			reset();
 		}
-		s.close();
 	}
 
 	boolean hasWon() {
@@ -83,7 +84,7 @@ public class Towers {
 		}
 		if (markerFrom < 0) {
 			return "No marker to move!\n";
-		} else if (markerTo < 2 && board[from].markers[markerFrom] > board[to].markers[markerTo + 1]) {
+		} else if (markerTo < board[0].markers.length - 1 && board[from].markers[markerFrom] > board[to].markers[markerTo + 1]) {
 			return "Marker is too big!\n";
 		}
 		board[to].markers[markerTo] = board[from].markers[markerFrom];
@@ -92,22 +93,23 @@ public class Towers {
 	}
 
 	void printBoard(String message) {
-		String[] strings = {"" , "" , ""};
+		String[] strings = new String[board[0].markers.length];
+		for (int i = 0; i < strings.length; i++) {
+			strings[i] = "";
+		}
 		for (Pole pole : board) {
 			for (int i = 0; i < strings.length; i++) {
-				switch(pole.markers[i]) {
-				case (0):
-					strings[i] += "        ";
-				break;
-				case (1):
-					strings[i] += "   []   ";
-				break;
-				case (2):
-					strings[i] += "  [  ]  ";
-				break;
-				case (3):
-					strings[i] += " [    ] ";
-				}
+				if (pole.markers[i] == 0) {
+					strings[i] += "           ";
+				} else if (pole.markers[i] == 1) {
+					strings[i] += String.format("    [%d]    ", pole.markers[i]);
+				} else if (pole.markers[i] == 2) {
+					strings[i] += String.format("   [ %d ]   ", pole.markers[i]);
+				} else if (pole.markers[i] == 3) {
+					strings[i] += String.format("  [  %d  ]  ", pole.markers[i]);
+				} else {
+					strings[i] += String.format(" [   %d   ] ", pole.markers[i]);
+				} 
 			}
 		}
 		for (int i = 0; i < 25; i++) {
@@ -116,20 +118,20 @@ public class Towers {
 		for (String string : strings) {
 			System.out.println(string);
 		}
-		System.out.println(" --||--  --||--  --||--");
+		System.out.println(" ---| |---  ---| |---  ---| |---");
 		System.out.print(message);
 	}
 
 	void reset() {
-		this.board = new Pole[3];
-		board[0] = new Pole(true);
-		board[1] = new Pole(false);
-		board[2] = new Pole(false);
-		play();
+		System.out.println("Size of tower?");
+		Towers t = new Towers(s.nextInt());
+		t.play();
 	}
 
 	public static void main(String[] args) {
-		Towers t = new Towers();
+		System.out.println("Size of tower?");
+		Towers t = new Towers(s.nextInt());
 		t.play();
+		s.close();
 	}
 }
