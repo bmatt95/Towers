@@ -9,19 +9,32 @@ import java.util.Scanner;
  */
 
 public class Towers {
+    /**
+     * Pole class
+     * stores an array of markers. one pole is initiated as first and holds the markers to start.
+     */
 	class Pole {
+        //array of markers
 		int[] markers;
+        /**
+         * Pole constructor
+         * @param isFirst - tells whether the pole is the first
+         * @param size - number of markers
+         */
 		Pole(boolean isFirst, int size) {
+            //first pole case, gives it the markers
 			if (isFirst) {
 				markers = new int[size];
 				for (int i = 0; i < markers.length; i++) {
 					markers[i] = i + 1;
 				}
 			} else {
+                //following pole cases, empty poles
 				markers = new int[size];
 			}
 		}
 
+        //reports whether a pole is aligned
 		boolean isAligned() {
 			for (int i = 0; i < markers.length - 2; i++) {
 				if (markers[i] > markers[i + 1] || markers[i] == 0 || markers [i + 1] == 0) {
@@ -32,21 +45,37 @@ public class Towers {
 		}
 	}
 
+    //array of poles
 	Pole[] board;
+    //static scanner to take user input
 	static Scanner s = new Scanner(System.in);
 
+    /**
+     * Towers constructor
+     * @param size - number of markers
+     */
 	Towers(int size) {
+        //initialize board
 		this.board = new Pole[3];
+        //first pole
 		board[0] = new Pole(true, size);
+        //second and third poles
 		board[1] = new Pole(false, size);
 		board[2] = new Pole(false, size);
 	}
 
+    /**
+     * allows the user to interact
+     */
 	void play() {
+        //print the board
 		printBoard("");
+        //loop until user wins
 		while (!hasWon()) {
+            //get user move
 			int from = s.nextInt();
 			int to = s.nextInt();
+            //print the board with the move
 			printBoard(move(from - 1, to - 1));
 		}
 		System.out.println("You win!\nPlay again? (y/n)");
@@ -55,6 +84,9 @@ public class Towers {
 		}
 	}
 
+    /**
+     * @return true when the user has won
+     */
 	boolean hasWon() {
 		if (board[2].isAligned() || board[1].isAligned()) {
 			return true;
